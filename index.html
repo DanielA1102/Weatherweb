@@ -1,20 +1,175 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Weer App</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="navbar">
-<nav>
-
-
-
-</nav>
-
+    <div class="card">
+        <div class="search">
+            <input type="text" id="searchBox" placeholder="Voer stad in" spellcheck="false">
+            <button id="searchBtn"><img src="images/search.png" alt="Zoeken"></button>
+        </div>
+        <div id="errorMessage" class="error">Deze zoekopdracht bevat geblokkeerde woorden!</div>
+        <div class="weather">
+            <img src="images/rain.png" class="weather-icon" alt="weersicoon">
+            <h1 class="temp">22°C</h1>
+            <h2 class="city">New York</h2>
+            <div class="details">
+                <div class="col1">
+                    <img src="images/humidity.png" alt="vochtigheid icoon">
+                    <div>
+                        <p class="humidity">50%</p>
+                        <p class="humidity-label">Vochtigheid</p>
+                    </div>
+                </div>
+                <div class="col2">
+                    <img src="images/wind.png" alt="wind icoon">
+                    <div>
+                        <p class="wind">15 km/h</p>
+                        <p class="wind-label">Windsnelheid</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Temperatuureenheid switcher -->
+        <div class="unit-switcher">
+            <label for="unitSelect">Temperatuureenheid: </label>
+            <select id="unitSelect">
+                <option value="metric" selected>Celsius (°C)</option>
+                <option value="imperial">Fahrenheit (°F)</option>
+            </select>
+            <div class="windspeed">
+                <label for="windUnitSelect">Windsnelheidseenheid: </label>
+                <select id="windUnitSelect">
+                    <option value="metric" selected>km/h</option>
+                    <option value="imperial">mph</option>
+                </select>
+            </div>
+        </div>
+        <button onclick="myFunction()">Donkere Modus</button>
     </div>
-    
+
+    <script>
+        // Functie om donkere modus te activeren
+        function myFunction() {
+            var element = document.body;
+            element.classList.toggle("dark-mode");
+        }
+
+        const apiKey = "89ea8c0fb5e2556fe312b42cf893beb4";
+        const apiUrl = "https://api.openweathermap.org/data/2.5/weather?q=";
+
+        const searchBox = document.getElementById("searchBox");
+        const searchBtn = document.getElementById("searchBtn");
+        const weatherIcon = document.querySelector(".weather-icon");
+        const errorMessage = document.getElementById("errorMessage");
+        const unitSelect = document.getElementById("unitSelect");
+        const windUnitSelect = document.getElementById("windUnitSelect");
+
+        let currentCity = "New York"; // Standaard stad bij het openen van de website
+
+        // Functie om het weer te controleren en weer te geven
+        async function checkWeather(city) {
+            try {
+                const unit = unitSelect.value; // Haal de geselecteerde temperatuureenheid op
+                const response = await fetch(apiUrl + city + `&units=${unit}&appid=${apiKey}`);
+                if (!response.ok) {
+                    throw new Error("Stad niet gevonden");
+                }
+                const data = await response.json();
+                console.log(data);
+
+                // Toon de temperatuur met de juiste eenheid
+                const tempUnit = unit === 'metric' ? '°C' : '°F';
+                document.querySelector(".city").innerHTML = data.name;
+                document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + tempUnit;
+                document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
+
+                // Haal de windsnelheid op in de geselecteerde eenheid
+                const windUnit = windUnitSelect.value;
+                let windSpeed = data.wind.speed;
+                if (windUnit === 'imperial') {
+                    windSpeed = Math.round(windSpeed * 0.621371); // Omzetten van km/h naar mph
+                }
+                const windUnitLabel = windUnit === 'metric' ? " km/h" : " mph";
+                document.querySelector(".wind").innerHTML = windSpeed + windUnitLabel;
+
+                // Werk het weersicoon bij op basis van de weersomstandigheden
+                if (data.weather[0].main == "Clouds") {
+                    weatherIcon.src = "images/clouds.png";
+                } else if (data.weather[0].main == "Clear") {
+                    weatherIcon.src = "images/clear.png";
+                } else if (data.weather[0].main == "Rain") {
+                    weatherIcon.src = "images/rain.png";
+                } else if (data.weather[0].main == "Drizzle") {
+                    weatherIcon.src = "images/drizzle.png";
+                } else if (data.weather[0].main == "Mist") {
+                    weatherIcon.src = "images/mist.png";
+                }
+            } catch (error) {
+                console.error("Fout bij het ophalen van weergegevens: ", error);
+                alert("Het is niet gelukt om de weergegevens op te halen. Controleer de stadsnaam.");
+            }
+        }
+
+        // Event listener voor het klikken op de zoekknop
+        searchBtn.addEventListener("click", () => {
+            const city = searchBox.value.toLowerCase().trim();
+            if (city === "") {
+                errorMessage.textContent = "Voer een stad in!";
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            const blockedKeywords = ["</>", "<>", ",", ";", "--", "<"];
+            for (let i = 0; i < blockedKeywords.length; i++) {
+                if (city.includes(blockedKeywords[i])) {
+                    errorMessage.style.display = 'block';
+                    return;
+                }
+            }
+
+            errorMessage.style.display = 'none';
+            currentCity = city;  // Sla de gezochte stad op
+            checkWeather(city);
+        });
+
+        // Event listener voor het veranderen van de temperatuureenheid
+        unitSelect.addEventListener("change", () => {
+            if (currentCity) {
+                checkWeather(currentCity);
+            }
+        });
+
+        // Event listener voor het veranderen van de windsnelheidseenheid
+        windUnitSelect.addEventListener("change", () => {
+            if (currentCity) {
+                checkWeather(currentCity);
+            }
+        });
+
+        // Automatisch het weer ophalen voor de standaardstad (New York) wanneer de pagina laadt
+        checkWeather(currentCity);
+    </script>
+
+    <footer>
+        <div class="footer-content">
+            <p>Bedankt voor het bezoeken!</p>
+            <div class="contact-section">
+                <h3>Contacteer ons</h3>
+                <p>Als u vragen heeft of feedback, voel u vrij om contact met ons op te nemen!</p>
+                <ul>
+                    <li>Email: <a href="mailto:info@weatherapp.com">info@weatherapp.com</a></li>
+                    <li>Telefoon: <a href="tel:+1234567890">+1 234 567 890</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 WeatherWeb. Alle rechten voorbehouden.</p>
+        </div>
+    </footer>
 </body>
 </html>
