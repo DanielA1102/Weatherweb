@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weer App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="card">
+        <div class="search">
+            <input type="text" id="searchBox" placeholder="Voer stad in">
+            <button id="searchBtn">Zoeken</button>
+        </div>
+        <div class="weather">
+            <h1 class="temp">22°C</h1>
+            <h2 class="city">New York</h2>
+            <div class="details">
+                <p class="humidity">50% Vochtigheid</p>
+                <p class="wind">15 km/h Wind</p>
+            </div>
+        </div>
+        <div class="unit-switcher">
+            <label for="unitSelect">Temperatuureenheid: </label>
+            <select id="unitSelect">
+                <option value="metric" selected>Celsius (°C)</option>
+                <option value="imperial">Fahrenheit (°F)</option>
+            </select>
+        </div>
+    </div>
+
+    <script>
+        const apiKey = "89ea8c0fb5e2556fe312b42cf893beb4";
+        const apiUrl = "https://api.openweathermap.org/data/2.5/weather?q=";
+
+        const searchBox = document.getElementById("searchBox");
+        const searchBtn = document.getElementById("searchBtn");
+        const unitSelect = document.getElementById("unitSelect");
+
+        async function checkWeather(city) {
+            const unit = unitSelect.value;
+            const response = await fetch(apiUrl + city + `&units=${unit}&appid=${apiKey}`);
+            const data = await response.json();
+            const tempUnit = unit === 'metric' ? '°C' : '°F';
+            document.querySelector(".city").innerHTML = data.name;
+            document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + tempUnit;
+            document.querySelector(".humidity").innerHTML = data.main.humidity + "% Vochtigheid";
+            document.querySelector(".wind").innerHTML = data.wind.speed + " km/h Wind";
+        }
+
+        searchBtn.addEventListener("click", () => {
+            const city = searchBox.value;
+            checkWeather(city);
+        });
+
+        unitSelect.addEventListener("change", () => {
+            const city = searchBox.value || "New York";
+            checkWeather(city);
+        });
+
+        checkWeather("New York");
+    </script>
+</body>
+</html>
