@@ -1,5 +1,249 @@
+/* Reset marges, padding en box-sizing voor alle elementen */
 * {
     margin: 0;
     padding: 0;
-    
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Standaardinstellingen voor de body */
+body {
+    background: #222;
+    color: white;
+}
+
+/* Kaartstijl - de hoofdcontainer voor de weergegevens */
+.card {
+    width: 90%;
+    max-width: 470px;
+    color: #fff;
+    margin: 75px auto 0;
+    border-radius: 20px;
+    padding: 40px 35px;
+    text-align: center;
+    background-color: #333; /* Donkere achtergrond voor betere zichtbaarheid */
+}
+
+/* Zoekveld styling */
+.search {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Styling voor het invoerveld in het zoekvak */
+.search input {
+    color: #555;
+    background: #ebfffc;
+    outline: 0;
+    border: 0;
+    padding: 10px 25px;
+    height: 60px;
+    border-radius: 5px;
+    flex: 1;
+    margin-right: 16px;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+/* Styling voor de zoekknop */
+.search button {
+    border-radius: 5px;
+    border: 0;
+    outline: 0;
+    background: #ebfffc;
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    margin-bottom: 50px;
+}
+
+/* Icon styling in de zoekknop */
+.search button img {
+    width: 20px;
+    height: 25px;
+}
+
+/* Weericoon styling */
+.weather-icon {
+    width: 170px;
+    margin-top: 30px;
+}
+
+/* Temperatuur weergave */
+.weather h1 {
+    font-size: 60px; /* Iets kleiner formaat voor betere zichtbaarheid op kleine schermen */
+    font-weight: 500;
+}
+
+/* Stadnaam weergave */
+.weather h2 {
+    font-size: 35px;
+    font-weight: 400;
+    margin-top: -10px;
+}
+
+/* Details container voor vochtigheid en wind */
+.details {
+    margin-top: 25px;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    flex-wrap: nowrap; /* Voorkomt dat items zich op kleine schermen stapelen */
+}
+
+/* Styling voor kolommen die vochtigheid en wind weergeven */
+.col1 {
+    display: flex;
+    align-items: center;
+    text-align: left;
+    margin-top: 20px;
+    flex: 1 1 45%; /* Flex-eigenschap voor flexibele layout */
+}
+
+.col2 {
+    display: flex;
+    align-items: center;
+    text-align: left;
+    margin-top: 20px;
+    flex: 1 1 45%; /* Flex-eigenschap voor flexibele layout */
+    padding-left: 100px;
+}
+
+/* Styling voor afbeeldingen in de kolommen */
+.col1 img , .col2 img {
+    width: 40px;
+    margin-right: 10px;
+}
+
+/* Vochtigheid en wind styling */
+.humidity, .wind {
+    font-size: 24px; /* Iets kleiner lettertype voor betere schaalbaarheid */
+    margin-top: -6px;
+}
+
+/* Donkere modus styling */
+.dark-mode {
+    background: black;
+}
+
+/* Algemene knopstijl */
+button {
+    border-radius: 5px;
+    padding: 15px 22px;
+    margin-top: 30px;
+    outline: 0;
+    cursor: pointer;
+    width: 100%; /* Knoppen maken de volledige breedte op kleine schermen */
+}
+
+/* Hover-effect voor knoppen */
+button:hover {
+    background: grey;
+}
+
+/* Foutmelding styling */
+.error {
+    color: red;
+    display: none;
+    margin-top: 10px;
+}
+
+/* Footer styling */
+footer {
+    text-align: center;
+    color: white;
+    margin-top: 40px;
+}
+
+/* Responsive Design */
+
+/* Voor mobiele apparaten en kleine schermen */
+@media (max-width: 600px) {
+    .weather h1 {
+        font-size: 40px;
+    }
+
+    .weather h2 {
+        font-size: 25px;
+    }
+
+    /* Details aanpassen voor kleine schermen */
+    .details {
+        padding: 0 10px;
+        flex-wrap: nowrap; /* Voorkomt stapelen van items */
+        justify-content: space-around; /* Verspreid de items horizontaal */
+    }
+
+    .col {
+        flex: 1 1 45%; /* Houd items naast elkaar */
+        margin-top: 15px;
+    }
+
+    /* Aanpassing van de kaart voor kleinere schermen */
+    .card {
+        padding: 20px;
+    }
+
+    /* Aanpassing van zoekinvoer voor mobiele apparaten */
+    .search input {
+        font-size: 16px;
+        height: 50px;
+    }
+
+    /* Zoekknop aanpassingen voor kleinere schermen */
+    .search button {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+/* Voor tablets */
+@media (min-width: 600px) and (max-width: 1024px) {
+    .card {
+        max-width: 600px;
+        padding: 30px;
+    }
+
+    .weather h1 {
+        font-size: 50px;
+    }
+
+    .weather h2 {
+        font-size: 30px;
+    }
+
+    .details {
+        padding: 0 15px;
+    }
+
+    .col {
+        flex: 1 1 48%; /* Verbeterde lay-out voor tablets */
+    }
+}
+
+/* Voor grote schermen (desktops) */
+@media (min-width: 1024px) {
+    .card {
+        max-width: 700px;
+        padding: 40px;
+    }
+
+    .weather h1 {
+        font-size: 70px;
+    }
+
+    .weather h2 {
+        font-size: 40px;
+    }
+
+    .details {
+        padding: 0 30px;
+    }
+
+    .col {
+        flex: 1 1 45%;
+        margin-top: 30px;
+    }
 }
